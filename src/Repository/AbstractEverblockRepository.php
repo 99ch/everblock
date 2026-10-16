@@ -22,6 +22,25 @@ abstract class AbstractEverblockRepository
         return '`' . str_replace('`', '', $this->databasePrefix . $table) . '`';
     }
 
+    /**
+     * Doctrine DBAL's insert() and update() do not quote column names.
+     * Some columns, such as `groups`, are reserved words since MySQL 8.0.2
+     * and make the generated query fail with SQLSTATE 42000 (error 1064).
+     *
+     * @param array<string, mixed> $data column => value
+     *
+     * @return array<string, mixed> same values, with quoted column names
+     */
+    protected function quoteColumns(array $data): array
+    {
+        $quoted = [];
+        foreach ($data as $column => $value) {
+            $quoted[$this->connection->quoteIdentifier((string) $column)] = $value;
+        }
+
+        return $quoted;
+    }
+
     protected function normalizeNullableDate($value): ?string
     {
         $value = trim((string) $value);
