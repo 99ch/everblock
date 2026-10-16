@@ -91,13 +91,13 @@ final class PageRepository extends AbstractEverblockRepository
         $this->connection->beginTransaction();
         try {
             if ($page->id) {
-                $this->connection->update($this->databasePrefix . 'everblock_page', $data, [
+                $this->connection->update($this->databasePrefix . 'everblock_page', $this->quoteColumns($data), $this->quoteColumns([
                     'id_everblock_page' => $page->id,
                     'id_shop' => $page->id_shop,
-                ]);
+                ]));
                 $id = (int) $page->id;
             } else {
-                $this->connection->insert($this->databasePrefix . 'everblock_page', $data);
+                $this->connection->insert($this->databasePrefix . 'everblock_page', $this->quoteColumns($data));
                 $id = (int) $this->connection->lastInsertId();
             }
 
