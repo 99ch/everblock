@@ -2734,7 +2734,11 @@ class EverblockTools
             $shortcode = '[everblock ' . $everblockId . ']';
             if (Validate::isLoadedObject($everblock)) {
                 $replacement = $everblock->content;
-                $txt = str_replace($shortcode, $replacement, $txt);
+                if (is_array($replacement)) {
+                    // The block entity stores its content per language (id_lang => html).
+                    $replacement = $replacement[(int) $context->language->id] ?? (reset($replacement) ?: '');
+                }
+                $txt = str_replace($shortcode, (string) $replacement, $txt);
             } else {
                 $txt = str_replace($shortcode, '', $txt);
             }
