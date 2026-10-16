@@ -110,13 +110,13 @@ final class BlockRepository extends AbstractEverblockRepository
         $this->connection->beginTransaction();
         try {
             if ($block->id) {
-                $this->connection->update($this->databasePrefix . 'everblock', $data, [
+                $this->connection->update($this->databasePrefix . 'everblock', $this->quoteColumns($data), $this->quoteColumns([
                     'id_everblock' => $block->id,
                     'id_shop' => $block->id_shop,
-                ]);
+                ]));
                 $id = (int) $block->id;
             } else {
-                $this->connection->insert($this->databasePrefix . 'everblock', $data);
+                $this->connection->insert($this->databasePrefix . 'everblock', $this->quoteColumns($data));
                 $id = (int) $this->connection->lastInsertId();
             }
 
